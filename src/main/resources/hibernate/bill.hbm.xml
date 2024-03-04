@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<!DOCTYPE hibernate-mapping PUBLIC
+        "-//Hibernate/Hibernate Mapping DTD//EN"
+        "http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
+
+<hibernate-mapping xmlns="http://www.hibernate.org/xsd/hibernate-mapping" default-access="field">
+    <class name="fhv.teamd.hotel.domain.Bill" table="bill">
+        <id name="id" column="id" type="long">
+            <generator class="increment"/>
+        </id>
+
+        <component name="domainId" class="fhv.teamd.hotel.domain.ids.BillId">
+            <property name="id" column="bill_id" type="string"/>
+        </component>
+
+        <!-- List<BillEntry> intermediateEntries -->
+        <list name="intermediateEntries" table="bill_entry">
+            <key column="bill_id"/>
+            <index column="entry_index"/>
+            <composite-element class="fhv.teamd.hotel.domain.BillEntry">
+                <property name="description" column="description" type="string"/>
+                <property name="timestamp" column="timestamp" type="java.time.LocalDateTime"/>
+                <property name="amount" column="amount" type="integer"/>
+                <property name="unitPrice" column="unit_price" type="double"/>
+            </composite-element>
+        </list>
+
+        <!-- List<FinalBill> finalBills -->
+        <list name="finalBills" table="bill_final_bill" cascade="all">
+            <key column="bill_id"/>
+            <index column="final_index"/>
+            <one-to-many class="fhv.teamd.hotel.domain.FinalBill"/>
+        </list>
+    </class>
+</hibernate-mapping>
